@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "SampleTab",
+    "name": "MahJongTest5",
     "slug": "SampleTab",
     "platforms": [
       "ios",
@@ -23,6 +23,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": ""
   }
 }
