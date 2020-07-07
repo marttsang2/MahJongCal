@@ -57,12 +57,18 @@ export default class HomeScreen extends React.Component {
             modalVisible2: false,
             modalVisible3: false,
             AlertVisible: false,
-            color: ['black','green','red'],
-            userdatacolor: 
-                {user1: 0,
+            JohnLin: false,
+            handlemodal: false,
+            JohnLinCount: 0,
+            color: [
+                'black', 'green', 'red'
+            ],
+            userdatacolor: {
+                user1: 0,
                 user2: 0,
                 user3: 0,
-                user4: 0}
+                user4: 0
+            }
         }
     }
 
@@ -71,7 +77,6 @@ export default class HomeScreen extends React.Component {
             return (alert('不能輸入相同玩家'))
         }
         let User = Object.assign({}, this.state.User);
-        let Color = Object.assign({}, this.state.userdatacolor);
         switch (Number(a)) {
             case 1:
                 if (Number(b) == 5) {
@@ -174,47 +179,55 @@ export default class HomeScreen extends React.Component {
             .Score
             .push(User);
 
-        if (this.state.Round != this.state.win) {
+        if (Number(a) == 5 || this.state.Round != this.state.win) {
+            this.setState({JohnLin: false});
+            this.setState({JohnLinCount: 0})
             if (this.state.Round != 4) {
                 this.state.Round -= -1;
             } else {
                 this.state.Round = 1;
-                if (this.state.WindCount == 4) {
-                    return (alert('結束'));
+                if (this.state.WindCount == 3) {
+                    this.state.WindCount = 0;
+                    alert('打完四圈')
+
                 } else {
-                    this.state.WindCount -= -1;
+                    this.state.WindCount += 1;
                 }
             }
+        } else {
+            this.setState({JohnLin: true});
+            this.state.JohnLinCount -= -1;
         }
-        if(this.state.Userdata.user1==0)
-            this.state.userdatacolor.user1=0;
-        else if (this.state.Userdata.user1>0)
-        this.state.userdatacolor.user1=1;
-        else if (this.state.Userdata.user1<0)
-        this.state.userdatacolor.user1=2;
+
+        if (this.state.Userdata.user1 == 0) 
+            this.state.userdatacolor.user1 = 0;
+        else if (this.state.Userdata.user1 > 0) 
+            this.state.userdatacolor.user1 = 1;
+        else if (this.state.Userdata.user1 < 0) 
+            this.state.userdatacolor.user1 = 2;
         
-        if(this.state.Userdata.user2==0)
-            this.state.userdatacolor.user2=0;
-        else if (this.state.Userdata.user2>0)
-        this.state.userdatacolor.user2=1;
-        else if (this.state.Userdata.user2<0)
-        this.state.userdatacolor.user2=2;
-
-        if(this.state.Userdata.user3==0)
-            this.state.userdatacolor.user3=0;
-        else if (this.state.Userdata.user3>0)
-        this.state.userdatacolor.user3=1;
-        else if (this.state.Userdata.user3<0)
-        this.state.userdatacolor.user3=2;
-
-        if(this.state.Userdata.user4==0)
-            this.state.userdatacolor.user4=0;
-        else if (this.state.Userdata.user4>0)
-        this.state.userdatacolor.user4=1;
-        else if (this.state.Userdata.user4<0)
-        this.state.userdatacolor.user4=2;
-    }
-
+        if (this.state.Userdata.user2 == 0) 
+            this.state.userdatacolor.user2 = 0;
+        else if (this.state.Userdata.user2 > 0) 
+            this.state.userdatacolor.user2 = 1;
+        else if (this.state.Userdata.user2 < 0) 
+            this.state.userdatacolor.user2 = 2;
+        
+        if (this.state.Userdata.user3 == 0) 
+            this.state.userdatacolor.user3 = 0;
+        else if (this.state.Userdata.user3 > 0) 
+            this.state.userdatacolor.user3 = 1;
+        else if (this.state.Userdata.user3 < 0) 
+            this.state.userdatacolor.user3 = 2;
+        
+        if (this.state.Userdata.user4 == 0) 
+            this.state.userdatacolor.user4 = 0;
+        else if (this.state.Userdata.user4 > 0) 
+            this.state.userdatacolor.user4 = 1;
+        else if (this.state.Userdata.user4 < 0) 
+            this.state.userdatacolor.user4 = 2;
+        }
+    
     handleJohn = (text) => {
         if (text == 1) {
             this.setState({John: "1號位"})
@@ -229,7 +242,7 @@ export default class HomeScreen extends React.Component {
 
     render() {
         var {width, height} = Dimensions.get('window')
-        const {table} = this.props.route.params;
+        const {table, username} = this.props.route.params;
         return (
             <View
                 style={{
@@ -247,14 +260,30 @@ export default class HomeScreen extends React.Component {
                         flexDirection: 'row'
                     }}>
                         <View style={{
-                            flex: .2
+                            flex: .3
                         }}>
                             <Text style={styles.getStartedText}>莊家:</Text>
                         </View>
-                        <View style={{
-                            flex: .2
+                        <View
+                            style={{
+                            flex: .3,
+                            flexDirection: 'row',
+                            justifyContent: 'center'
                         }}>
-                            <Text style={styles.getStartedText}>{this.state.John}</Text>
+                            <Text style={styles.getStartedText}>{username[this.state.Round-1]}</Text>
+                            <View>{this.state.JohnLin
+                                    ? (
+                                        <Text
+                                            style={{
+                                            alignSelf: 'center',
+                                            fontSize: 20,
+                                            marginLeft: 10,
+                                            color: 'white',
+                                            backgroundColor: 'red'
+                                        }}>{this.state.JohnLinCount}連莊</Text>
+                                    )
+                                    : null}
+                            </View>
                         </View>
 
                     </View>
@@ -266,7 +295,7 @@ export default class HomeScreen extends React.Component {
                         flex: 1
                     }}>
                         <View style={{
-                            flex: .2
+                            flex: .3
                         }}>
                             <Text style={styles.getStartedText}>
                                 {this.state.Wind[this.state.WindCount]}圈
@@ -274,7 +303,7 @@ export default class HomeScreen extends React.Component {
                         </View>
 
                         <View style={{
-                            flex: .2
+                            flex: .3
                         }}>
                             <Text style={styles.getStartedText}>
                                 {this.state.Wind[this.state.Round - 1]}局
@@ -299,8 +328,8 @@ export default class HomeScreen extends React.Component {
                                 style={{
                                 alignSelf: 'center',
                                 fontSize: 20,
-                                color:this.state.color[this.state.userdatacolor.user1]
-                            }}>1號位: {this.state.Userdata.user1}</Text>
+                                color: this.state.color[this.state.userdatacolor.user1]
+                            }}>{username[0]}: {this.state.Userdata.user1}</Text>
                         </View>
 
                         <View
@@ -312,8 +341,8 @@ export default class HomeScreen extends React.Component {
                                 style={{
                                 alignSelf: 'center',
                                 fontSize: 20,
-                                color:this.state.color[this.state.userdatacolor.user2]
-                            }}>2號位: {this.state.Userdata.user2}</Text>
+                                color: this.state.color[this.state.userdatacolor.user2]
+                            }}>{username[1]}: {this.state.Userdata.user2}</Text>
                         </View>
                     </View>
 
@@ -330,22 +359,21 @@ export default class HomeScreen extends React.Component {
                                 style={{
                                 alignSelf: 'center',
                                 fontSize: 20,
-                                color:this.state.color[this.state.userdatacolor.user3]
-                            }}>3號位: {this.state.Userdata.user3}</Text>
+                                color: this.state.color[this.state.userdatacolor.user3]
+                            }}>{username[2]}: {this.state.Userdata.user3}</Text>
                         </View>
 
                         <View
                             style={{
                             flex: 1,
-                            margin: 20,
-                            
+                            margin: 20
                         }}>
                             <Text
                                 style={{
                                 alignSelf: 'center',
                                 fontSize: 20,
-                                color:this.state.color[this.state.userdatacolor.user4]
-                            }}>4號位: {this.state.Userdata.user4}</Text>
+                                color: this.state.color[this.state.userdatacolor.user4]
+                            }}>{username[3]}: {this.state.Userdata.user4}</Text>
                         </View>
                     </View>
 
@@ -371,10 +399,10 @@ export default class HomeScreen extends React.Component {
                                     <Text style={styles.modalText}>邊個贏錢</Text>
                                     <View
                                         style={{
-                                        marginTop:5,
+                                        marginTop: 5,
                                         borderBottomColor: 'black',
                                         borderBottomWidth: .9,
-                                       width:150
+                                        width: 150
                                     }}></View>
                                     <TouchableOpacity
                                         onPress={() => {
@@ -382,7 +410,7 @@ export default class HomeScreen extends React.Component {
                                         this.setState({modalVisible: false});
                                         this.setState({modalVisible2: true})
                                     }}>
-                                        <Text style={styles.modalUserText}>User1</Text>
+                                        <Text style={styles.modalUserText}>{username[0]}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
@@ -390,7 +418,7 @@ export default class HomeScreen extends React.Component {
                                         this.setState({modalVisible: false});
                                         this.setState({modalVisible2: true})
                                     }}>
-                                        <Text style={styles.modalUserText}>User2</Text>
+                                        <Text style={styles.modalUserText}>{username[1]}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
@@ -398,7 +426,7 @@ export default class HomeScreen extends React.Component {
                                         this.setState({modalVisible: false});
                                         this.setState({modalVisible2: true})
                                     }}>
-                                        <Text style={styles.modalUserText}>User3</Text>
+                                        <Text style={styles.modalUserText}>{username[2]}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
@@ -406,7 +434,15 @@ export default class HomeScreen extends React.Component {
                                         this.setState({modalVisible: false});
                                         this.setState({modalVisible2: true})
                                     }}>
-                                        <Text style={styles.modalUserText}>User4</Text>
+                                        <Text style={styles.modalUserText}>{username[3]}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({modalVisible: false});
+                                        this.ChangeValue(5, 0, 0);
+                                        this.handleJohn(this.state.Round);
+                                    }}>
+                                        <Text style={styles.modalUserText}>流局</Text>
                                     </TouchableOpacity>
                                 </View>
                             </TouchableWithoutFeedback>
@@ -434,48 +470,53 @@ export default class HomeScreen extends React.Component {
                                     <Text style={styles.modalText}>邊個輸錢</Text>
                                     <View
                                         style={{
-                                        marginTop:5,
+                                        marginTop: 5,
                                         borderBottomColor: 'black',
                                         borderBottomWidth: .9,
-                                       width:150
+                                        width: 150
                                     }}></View>
                                     <TouchableOpacity
                                         onPress={() => {
                                         this.setState({lose: 1});
                                         this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false})
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal:false});
                                     }}>
-                                        <Text style={styles.modalUserText}>User1</Text>
+                                        <Text style={styles.modalUserText}>{username[0]}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
                                         this.setState({lose: 2});
                                         this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false})
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal:false});
                                     }}>
-                                        <Text style={styles.modalUserText}>User2</Text>
+                                        <Text style={styles.modalUserText}>{username[1]}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
                                         this.setState({lose: 3});
                                         this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false})
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal:false});
                                     }}>
-                                        <Text style={styles.modalUserText}>User3</Text>
+                                        <Text style={styles.modalUserText}>{username[2]}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
                                         this.setState({lose: 4});
                                         this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false})
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal:false});
                                     }}>
-                                        <Text style={styles.modalUserText}>User4</Text>
+                                        <Text style={styles.modalUserText}>{username[3]}</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
                                         this.setState({lose: 5});
                                         this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false})
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal:true});
                                     }}>
                                         <Text style={styles.modalUserText}>自摸</Text>
                                     </TouchableOpacity>
@@ -507,30 +548,42 @@ export default class HomeScreen extends React.Component {
                                     <Text style={styles.modalText}>番數</Text>
                                     <View
                                         style={{
-                                        marginTop:5,
+                                        marginTop: 5,
                                         borderBottomColor: 'black',
                                         borderBottomWidth: .9,
-                                       width:150
+                                        width: 150
                                     }}></View>
                                     {table.map((data, i) => {
                                         return (
                                             <TouchableOpacity
                                                 key={i}
                                                 onPress={() => {
-                                                this.setState({modalVisible3: false});
-                                                this.ChangeValue(this.state.win, this.state.lose, data.score);
-                                                this.handleJohn(this.state.Round);
-                                                this
-                                                    .props
-                                                    .navigation
-                                                    .navigate('分數記錄', {User: this.state.Score});
-                                                this
-                                                    .props
-                                                    .navigation
-                                                    .goBack();
+                                                Alert.alert('確定分數', !this.state.handlemodal?('WIN:'+username[this.state.win-1]+" LOSE:"+username[this.state.lose-1]+" ["+data.score+"]"):'WIN:'+username[this.state.win-1]+" 自摸 ["+data.score+"]", [
+                                                    {
+                                                        text: "OK",
+                                                        onPress: () => {
+                                                            this.setState({modalVisible3: false});
+                                                            this.ChangeValue(this.state.win, this.state.lose, data.score);
+                                                            this.handleJohn(this.state.Round);
+                                                            this
+                                                                .props
+                                                                .navigation
+                                                                .navigate('分數記錄', {User: this.state.Score,Username:username});
+                                                            this
+                                                                .props
+                                                                .navigation
+                                                                .goBack();
+                                                        }
+                                                    }, {
+                                                        text: "Cancel",
+                                                        onPress:()=>{
+                                                            this.setState({modalVisible3: false});
+                                                        }
+                                                    }
+                                                ])
                                             }}>
                                                 <Text style={styles.modalUserText}>{data.fan}
-                                                    番</Text>
+                                                    番 {data.score}</Text>
                                             </TouchableOpacity>
                                         )
 
@@ -598,7 +651,10 @@ export default class HomeScreen extends React.Component {
                             this
                                 .props
                                 .navigation
-                                .navigate('分數記錄', {User: this.state.Score});
+                                .navigate('分數記錄', {
+                                    User: this.state.Score,
+                                    Username: username
+                                });
                         }}>
                             <LinearGradient
                                 style={{
@@ -682,7 +738,7 @@ const styles = StyleSheet.create({
     },
     modalText: {
         fontSize: 20,
-        fontWeight:'bold'
+        fontWeight: 'bold'
     },
     modalUserText: {
         fontSize: 20,

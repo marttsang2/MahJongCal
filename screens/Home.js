@@ -2,16 +2,19 @@ import * as React from 'react';
 import {
     View,
     Text,
+    TextInput,
     Switch,
     Button,
     StyleSheet,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    KeyboardAvoidingView
 } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import {DataTable} from 'react-native-paper';
-import {TextInput, ScrollView} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import Setting from './Setting';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class HomeScreen extends React.Component {
     constructor() {
@@ -20,6 +23,7 @@ export default class HomeScreen extends React.Component {
             min: [
                 3, 8
             ],
+            username:["1號位","2號位","3號位","4號位"],
             table: [],
             switchValue: true,
             switchInit: true
@@ -33,6 +37,8 @@ export default class HomeScreen extends React.Component {
     toggleInitSwitch = (value) => {
         this.setState({switchInit: value})
     }
+
+    checkEmpty(table, min) {}
 
     render() {
         const Foldup = () => {
@@ -82,7 +88,7 @@ export default class HomeScreen extends React.Component {
                 }
             } else {
                 for (var i = this.state.min[0]; i <= this.state.min[1]; i++) {
-                   if (i < 3) {
+                    if (i < 3) {
                         this
                             .state
                             .table
@@ -90,34 +96,31 @@ export default class HomeScreen extends React.Component {
                                 fan: i,
                                 score: i *(num / 4)
                             });
-                    }
-                    else if (i%2==0){
-                        num_even = Math.pow(2,(i/2)+1)* num/4
-                        this.state
+                    } else if (i % 2 == 0) {
+                        num_even = Math.pow(2, (i / 2) + 1) * num / 4
+                        this
+                            .state
                             .table
-                            .push({
-                                fan: i,
-                                score: num_even
-                            });
-                    }
-                    else if (i%2!=0){
-                        if(i==3)
+                            .push({fan: i, score: num_even});
+                    } else if (i % 2 != 0) {
+                        if (i == 3) 
                             num_odd = num;
-                        else    
-                            num_odd = num*3*Math.pow(2,(i-5)/2);
-                        this.state
+                        else 
+                            num_odd = num * 3 * Math.pow(2, (i - 5) / 2);
+                        this
+                            .state
                             .table
-                            .push({
-                                fan: i,
-                                score: num_odd
-                            });
+                            .push({fan: i, score: num_odd});
                     }
                 }
             }
-            
+
             return (
 
-                <ScrollView>
+                <ScrollView
+                innerRef={ref => {
+                    this.scroll = ref
+                  }}>
                     {this
                         .state
                         .table
@@ -127,17 +130,18 @@ export default class HomeScreen extends React.Component {
                                     style={{
                                     flex: 1,
                                     flexDirection: 'row',
-                                    marginTop:10
+                                    marginTop: 10
                                 }}
                                     key={i}>
                                     <View
                                         style={{
                                         flex: 1,
-                                        alignItems: 'center'
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
                                     }}>
                                         <Text
                                             style={{
-                                            fontSize: 20,
+                                            fontSize: 22,
                                             fontWeight: '500'
                                         }}>{data.fan}</Text>
                                     </View>
@@ -147,14 +151,27 @@ export default class HomeScreen extends React.Component {
                                         flex: 1,
                                         alignItems: 'center'
                                     }}>
-                                        <Text
+                                        <TextInput
                                             style={{
-                                            fontSize: 20,
-                                            fontWeight: '500'
-                                        }}>{data.score}</Text>
+                                            fontSize: 22,
+                                            fontWeight: '700',
+                                            borderColor: 'black',
+                                            borderWidth: 2,
+                                            width: 50,
+                                            borderRadius: 4,
+                                            borderColor: "grey",
+                                            textAlign: 'center'
+                                        }}
+                                            ref={input => {
+                                            this.textInput = input
+                                        }}
+                                            keyboardType={'numeric'}
+                                            maxLength={3}
+                                            onChangeText={(input) => {
+                                            data.score = input
+                                        }}>{data.score}</TextInput>
                                     </View>
                                 </View>
-
                             )
                         })
 }
@@ -163,61 +180,87 @@ export default class HomeScreen extends React.Component {
         }
         var {width, height} = Dimensions.get('window')
         return (
+            <KeyboardAwareScrollView
+            enableAutomaticScroll={true}
+            >
             <View
                 style={{
                 flex: 1,
-                alignItems: 'center',
-                marginTop: 10
+                alignItems: 'center'
             }}>
-                <View
-                    style={{
-                    flexDirection: 'row',
-                    margin: 20,
-                }}>
-                    <View style={{
-                        flex: .7,
-                        alignSelf:'center'
-                    }}>
-                        <Text
-                            style={{
-                            fontSize: 20,
-                            fontWeight: 'bold',
-                            
-                        }}><Foldup/></Text>
-                    </View>
-                    <View style={{
-                        
-                    }}>
-                        <Switch value={this.state.switchValue} onValueChange={this.toggleSwitch}/>
-                    </View>
-
+                <View style={{flexDirection:'row'}}>
+                <TextInput
+                        onChangeText={(text)=>this.state.username[0]=text}
+                        clearTextOnFocus={true}
+                        textAlign="center"
+                        maxLength={9}
+                        style={styles.username}
+                    >{this.state.username[0]}</TextInput>
+                    <TextInput
+                        onChangeText={(text)=>this.state.username[1]=text}
+                        clearTextOnFocus={true}
+                        textAlign="center"
+                        maxLength={9}
+                        style={styles.username}
+                    >{this.state.username[1]}</TextInput>
+                </View>
+                <View style={{flexDirection:'row'}}>
+                <TextInput
+                        onChangeText={(text)=>this.state.username[2]=text}
+                        clearTextOnFocus={true}
+                        textAlign="center"
+                        maxLength={9}
+                        style={styles.username}
+                    >{this.state.username[2]}</TextInput>
+                    <TextInput
+                        onChangeText={(text)=>this.state.username[3]=text}
+                        clearTextOnFocus={true}
+                        textAlign="center"
+                        maxLength={9}
+                        style={styles.username}
+                    >{this.state.username[3]}</TextInput>
                 </View>
                 <View
                     style={{
+                    borderBottomColor: 'black',
                     borderBottomWidth: StyleSheet.hairlineWidth,
                     width: width
                 }}></View>
                 <View
                     style={{
-                    flexDirection: "row",
+                    flexDirection: 'row',
                     margin: 20
                 }}>
-                    <View style={{
-                       flex: .7,
-                       alignSelf:'center'
+                    <View
+                        style={{
+                        alignSelf: 'center'
                     }}>
                         <Text
                             style={{
                             fontSize: 20,
-                            fontWeight: 'bold'
-                        }}><InitScore/></Text>
+                            fontWeight: 'bold',
+                            marginRight:10
+                        }}><Foldup/></Text>
+
                     </View>
 
-                    <View style={{
-                        
-                    }}>
+                    <Switch value={this.state.switchValue} onValueChange={this.toggleSwitch}/>
+
+                        <View
+                            style={{
+                            alignSelf: 'center',
+                            marginLeft:20,
+                        }}>
+                            <Text
+                                style={{
+                                fontSize: 20,
+                                marginRight:10,
+                                fontWeight: 'bold'
+                            }}><InitScore/></Text>
+                        </View>
+
                         <Switch value={this.state.switchInit} onValueChange={this.toggleInitSwitch}/>
-                    </View>
+
 
                 </View>
                 <View
@@ -231,7 +274,7 @@ export default class HomeScreen extends React.Component {
                     onValuesChange={(min) => this.setState({min: min})}
                     sliderLength={280}
                     min={1}
-                    max={10}
+                    max={13}
                     step={1}
                     allowOverlap={false}
                     snapped
@@ -257,15 +300,21 @@ export default class HomeScreen extends React.Component {
                     </View>
 
                 </View>
+
                 <TouchableOpacity
-                    style={{margin:10}}
+                    style={{
+                    margin: 10
+                }}
                     activeOpacity={1}
-                    onPress={() => this.props.navigation.replace('分數表', {table: this.state.table,color: this.state.color})}>
+                    onPress={() => this.props.navigation.replace('分數表', {
+                    table: this.state.table,
+                    username: this.state.username
+                })}>
                     <Text
                         style={{
                         alignSelf: 'center',
                         backgroundColor: "white",
-                        width:100,
+                        width: 100,
                         fontSize: 20,
                         borderRadius: 10,
                         padding: 10,
@@ -276,32 +325,33 @@ export default class HomeScreen extends React.Component {
                         },
                         elevation: 5,
                         shadowOpacity: 0.25,
-                        alignSelf:'center',
+                        alignSelf: 'center',
                         textAlign: 'center'
                     }}>開枱</Text>
                 </TouchableOpacity>
-                
-                    <View style={{
-                        flex: 0,
-                        flexDirection:'row',
-                    }}>
 
-                        <View
-                            style={{
-                            flex: 1,
-                            alignItems:'center'
-                        }}>
-                            <Text>番數</Text>
-                        </View>
-                        <View
-                            style={{
-                            flex: 1,
-                            alignItems:'center'
-                        }}>
-                            <Text>食糊分數</Text>
-                        </View>
+                <View
+                    style={{
+                    flex: 0,
+                    flexDirection: 'row'
+                }}>
+
+                    <View
+                        style={{
+                        flex: 1,
+                        alignItems: 'center'
+                    }}>
+                        <Text>番數</Text>
                     </View>
-               
+                    <View
+                        style={{
+                        flex: 1,
+                        alignItems: 'center'
+                    }}>
+                        <Text>食糊分數</Text>
+                    </View>
+                </View>
+            
                 <View
                     style={{
                     marginTop: 10,
@@ -313,9 +363,12 @@ export default class HomeScreen extends React.Component {
                     width: width
                 }}>
                     <Fan/>
-                    <View style={{height:40}}></View>
+                    <View style={{
+                        height: 40
+                    }}></View>
                 </ScrollView>
             </View>
+            </KeyboardAwareScrollView>
         );
     }
 }
@@ -324,5 +377,16 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 24,
         backgroundColor: "#eaeaea"
+    },
+    username:{
+        width:150,
+        fontSize:20,
+        padding:15,
+        marginVertical:15,
+        backgroundColor:'white',
+        borderColor:"black",
+        borderWidth:2,
+        borderRadius:7,
+        marginHorizontal:15,
     }
 })

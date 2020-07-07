@@ -34,7 +34,7 @@ function DrawerNavigator({navigation}) {
 function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator initialRouteName={Home}>
                 <Stack.Screen name="分數設定" component={Home}/>
                 <Stack.Screen name="分數表" component={Setting}/>
                 <Stack.Screen name="分數記錄" component={Score}/>

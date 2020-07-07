@@ -11,15 +11,15 @@ export default class LinksScreen extends React.Component {
     }
   }
   render() {
-    const {User} = this.props.route.params;
+    const {User,Username} = this.props.route.params;
     var {width, height} = Dimensions.get('window');
   return (
     <ScrollView>
       <View style={{flex:1,flexDirection:'row',marginTop:5}}>
-        <View style={{flex:1}}><Text style={styles.textstyle}>1號位</Text></View>
-        <View style={{flex:1}}><Text style={styles.textstyle}>2號位</Text></View>
-        <View style={{flex:1}}><Text style={styles.textstyle}>3號位</Text></View>
-        <View style={{flex:1}}><Text style={styles.textstyle}>4號位</Text></View>
+        <View style={{flex:1}}><Text style={styles.textstyle}>{Username[0]}</Text></View>
+        <View style={{flex:1}}><Text style={styles.textstyle}>{Username[1]}</Text></View>
+        <View style={{flex:1}}><Text style={styles.textstyle}>{Username[2]}</Text></View>
+        <View style={{flex:1}}><Text style={styles.textstyle}>{Username[3]}</Text></View>
       </View>
 
       <View
