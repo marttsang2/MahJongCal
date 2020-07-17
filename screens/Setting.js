@@ -48,7 +48,6 @@ export default class HomeScreen extends React.Component {
             point: 1,
             user: '',
             Round: 1,
-            John: "1號位",
             WindCount: 0,
             Wind: [
                 "東", "南", "西", "北"
@@ -56,9 +55,12 @@ export default class HomeScreen extends React.Component {
             modalVisible: false,
             modalVisible2: false,
             modalVisible3: false,
+            modalVisible4: false,
             AlertVisible: false,
             JohnLin: false,
             handlemodal: false,
+            handlemodal2: false,
+            handlemodal3: false,
             JohnLinCount: 0,
             color: [
                 'black', 'green', 'red'
@@ -79,7 +81,7 @@ export default class HomeScreen extends React.Component {
         let User = Object.assign({}, this.state.User);
         switch (Number(a)) {
             case 1:
-                if (Number(b) == 5) {
+                if (this.state.handlemodal2 || this.state.handlemodal3) {
                     User.user1 -= -3 * p;
                     User.color1 += 1;
                     this.state.Userdata.user1 -= -3 * p;
@@ -90,7 +92,7 @@ export default class HomeScreen extends React.Component {
                 this.state.Userdata.user1 -= -p;
                 break;
             case 2:
-                if (Number(b) == 5) {
+                if (this.state.handlemodal2 || this.state.handlemodal3) {
                     User.user2 -= -3 * p;
                     User.color2 += 1;
                     this.state.Userdata.user2 -= -3 * p;
@@ -101,7 +103,7 @@ export default class HomeScreen extends React.Component {
                 this.state.Userdata.user2 -= -p;
                 break;
             case 3:
-                if (Number(b) == 5) {
+                if (this.state.handlemodal2 || this.state.handlemodal3) {
                     User.user3 -= -3 * p;
                     User.color3 += 1;
                     this.state.Userdata.user3 -= -3 * p;
@@ -112,12 +114,13 @@ export default class HomeScreen extends React.Component {
                 this.state.Userdata.user3 -= -p;
                 break;
             case 4:
-                if (Number(b) == 5) {
+                if (this.state.handlemodal2 || this.state.handlemodal3) {
                     User.user4 -= -3 * p;
                     User.color4 += 1;
                     this.state.Userdata.user4 -= -3 * p;
                     break;
                 }
+
                 User.user4 -= -p;
                 User.color4 += 1;
                 this.state.Userdata.user4 -= -p;
@@ -147,30 +150,50 @@ export default class HomeScreen extends React.Component {
                 User.color4 += 2;
                 this.state.Userdata.user4 -= p;
                 break;
-            case 5:
-                if (a != 1) {
-                    User.user1 = -p;
-                    User.color1 += 2;
-                    this.state.Userdata.user1 -= p;
-                }
-                if (a != 2) {
-                    User.user2 = -p;
-                    User.color2 += 2;
-                    this.state.Userdata.user2 -= p;
-                }
-                if (a != 3) {
-                    User.user3 = -p;
-                    User.color3 += 2;
-                    this.state.Userdata.user3 -= p;
-                }
-                if (a != 4) {
-                    User.user4 = -p;
-                    User.color4 += 2;
-                    this.state.Userdata.user4 -= p;
-                }
-                break;
             default:
                 this.setState(User);
+        }
+        if (this.state.handlemodal3) {
+            if (a != 1) {
+                User.user1 -= 3 * p;
+                User.color1 += 2;
+                this.state.Userdata.user1 -= 3 * p;
+            } else if (a != 2) {
+                User.user2 -= 3 * p;
+                User.color2 += 2;
+                this.state.Userdata.user2 -= 3 * p;
+            } else if (a != 3) {
+                User.user3 -= 3 * p;
+                User.color3 += 2;
+                this.state.Userdata.user3 -= 3 * p;
+            } else if (a != 4) {
+                User.user4 -= 3 * p;
+                User.color4 += 2;
+                this.state.Userdata.user4 -= 3 * p;
+            }
+        }
+
+        if (this.state.handlemodal2) {
+            if (a != 1) {
+                User.user1 = -p;
+                User.color1 += 2;
+                this.state.Userdata.user1 -= p;
+            }
+            if (a != 2) {
+                User.user2 = -p;
+                User.color2 += 2;
+                this.state.Userdata.user2 -= p;
+            }
+            if (a != 3) {
+                User.user3 = -p;
+                User.color3 += 2;
+                this.state.Userdata.user3 -= p;
+            }
+            if (a != 4) {
+                User.user4 = -p;
+                User.color4 += 2;
+                this.state.Userdata.user4 -= p;
+            }
         }
 
         this.setState(User);
@@ -241,7 +264,7 @@ export default class HomeScreen extends React.Component {
     }
 
     render() {
-        var {width, height} = Dimensions.get('window')
+        var {width} = Dimensions.get('window')
         const {table, username} = this.props.route.params;
         return (
             <View
@@ -270,7 +293,7 @@ export default class HomeScreen extends React.Component {
                             flexDirection: 'row',
                             justifyContent: 'center'
                         }}>
-                            <Text style={styles.getStartedText}>{username[this.state.Round-1]}</Text>
+                            <Text style={styles.getStartedText}>{username[this.state.Round - 1]}</Text>
                             <View>{this.state.JohnLin
                                     ? (
                                         <Text
@@ -438,90 +461,25 @@ export default class HomeScreen extends React.Component {
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => {
-                                        this.setState({modalVisible: false});
-                                        this.ChangeValue(5, 0, 0);
-                                        this.handleJohn(this.state.Round);
+                                        Alert.alert('流局', "確定流局?", [
+                                            {
+                                                text: "OK",
+                                                onPress: () => {
+                                                    this.setState({modalVisible: false});
+                                                    this.ChangeValue(5, 0, 0);
+                                                    this.handleJohn(this.state.Round);
+                                                }
+                                            }, {
+                                                text: "Cancel",
+                                                onPress: () => {
+                                                    this.setState({modalVisible: false});
+                                                }
+                                            }
+                                        ])
                                     }}>
                                         <Text style={styles.modalUserText}>流局</Text>
                                     </TouchableOpacity>
                                 </View>
-                            </TouchableWithoutFeedback>
-                        </View>
-                    </TouchableOpacity>
-                </Modal>
-
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={this.state.modalVisible2}
-                    onRequestClose={() => {
-                    this.setState({modalVisible2: false})
-                }}>
-                    <TouchableOpacity
-                        style={styles.container}
-                        activeOpacity={1}
-                        transparent={true}
-                        onPressOut={() => {
-                        this.setState({modalVisible2: false})
-                    }}>
-                        <View>
-                            <TouchableWithoutFeedback>
-                                <View style={styles.modalView}>
-                                    <Text style={styles.modalText}>邊個輸錢</Text>
-                                    <View
-                                        style={{
-                                        marginTop: 5,
-                                        borderBottomColor: 'black',
-                                        borderBottomWidth: .9,
-                                        width: 150
-                                    }}></View>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                        this.setState({lose: 1});
-                                        this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false});
-                                        this.setState({handlemodal:false});
-                                    }}>
-                                        <Text style={styles.modalUserText}>{username[0]}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                        this.setState({lose: 2});
-                                        this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false});
-                                        this.setState({handlemodal:false});
-                                    }}>
-                                        <Text style={styles.modalUserText}>{username[1]}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                        this.setState({lose: 3});
-                                        this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false});
-                                        this.setState({handlemodal:false});
-                                    }}>
-                                        <Text style={styles.modalUserText}>{username[2]}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                        this.setState({lose: 4});
-                                        this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false});
-                                        this.setState({handlemodal:false});
-                                    }}>
-                                        <Text style={styles.modalUserText}>{username[3]}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                        this.setState({lose: 5});
-                                        this.setState({modalVisible3: true});
-                                        this.setState({modalVisible2: false});
-                                        this.setState({handlemodal:true});
-                                    }}>
-                                        <Text style={styles.modalUserText}>自摸</Text>
-                                    </TouchableOpacity>
-                                </View>
-
                             </TouchableWithoutFeedback>
                         </View>
                     </TouchableOpacity>
@@ -543,6 +501,70 @@ export default class HomeScreen extends React.Component {
                     }}>
                         <View>
                             <TouchableWithoutFeedback>
+                                <View style={styles.modalView}>
+                                    <Text style={styles.modalText}>邊個輸錢</Text>
+                                    <View
+                                        style={{
+                                        marginTop: 5,
+                                        borderBottomColor: 'black',
+                                        borderBottomWidth: .9,
+                                        width: 150
+                                    }}></View>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({lose: 1});
+                                        this.setState({modalVisible4: true});
+                                        this.setState({modalVisible3: false});
+                                    }}>
+                                        <Text style={styles.modalUserText}>{username[0]}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({lose: 2});
+                                        this.setState({modalVisible4: true});
+                                        this.setState({modalVisible3: false});
+                                    }}>
+                                        <Text style={styles.modalUserText}>{username[1]}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({lose: 3});
+                                        this.setState({modalVisible4: true});
+                                        this.setState({modalVisible3: false});
+                                    }}>
+                                        <Text style={styles.modalUserText}>{username[2]}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({lose: 4});
+                                        this.setState({modalVisible4: true});
+                                        this.setState({modalVisible3: false});
+                                    }}>
+                                        <Text style={styles.modalUserText}>{username[3]}</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </TouchableOpacity>
+                </Modal>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible4}
+                    onRequestClose={() => {
+                    this.setState({modalVisible4: false})
+                }}>
+                    <TouchableOpacity
+                        style={styles.container}
+                        activeOpacity={1}
+                        transparent={true}
+                        onPressOut={() => {
+                        this.setState({modalVisible4: false})
+                    }}>
+                        <View>
+                            <TouchableWithoutFeedback>
 
                                 <View style={styles.modalView}>
                                     <Text style={styles.modalText}>番數</Text>
@@ -558,17 +580,26 @@ export default class HomeScreen extends React.Component {
                                             <TouchableOpacity
                                                 key={i}
                                                 onPress={() => {
-                                                Alert.alert('確定分數', !this.state.handlemodal?('WIN:'+username[this.state.win-1]+" LOSE:"+username[this.state.lose-1]+" ["+data.score+"]"):'WIN:'+username[this.state.win-1]+" 自摸 ["+data.score+"]", [
+                                                Alert.alert('確定分數', (this.state.handlemodal
+                                                    ? ('贏家:' + username[this.state.win - 1] + " 輸家:" + username[this.state.lose - 1] + " [" + data.score + "]")
+                                                    : ("")) + (this.state.handlemodal2
+                                                    ? ('贏家:' + username[this.state.win - 1] + " 自摸 [" + data.score + "]")
+                                                    : ("")) + (this.state.handlemodal3
+                                                    ? ('贏家:' + username[this.state.win - 1] + " 輸家:" + username[this.state.lose - 1] + " 包自摸 [" + data.score + "]")
+                                                    : ("")), [
                                                     {
                                                         text: "OK",
                                                         onPress: () => {
-                                                            this.setState({modalVisible3: false});
+                                                            this.setState({modalVisible4: false});
                                                             this.ChangeValue(this.state.win, this.state.lose, data.score);
                                                             this.handleJohn(this.state.Round);
                                                             this
                                                                 .props
                                                                 .navigation
-                                                                .navigate('分數記錄', {User: this.state.Score,Username:username});
+                                                                .navigate('分數記錄', {
+                                                                    User: this.state.Score,
+                                                                    Username: username
+                                                                });
                                                             this
                                                                 .props
                                                                 .navigation
@@ -576,8 +607,8 @@ export default class HomeScreen extends React.Component {
                                                         }
                                                     }, {
                                                         text: "Cancel",
-                                                        onPress:()=>{
-                                                            this.setState({modalVisible3: false});
+                                                        onPress: () => {
+                                                            this.setState({modalVisible4: false});
                                                         }
                                                     }
                                                 ])
@@ -595,6 +626,64 @@ export default class HomeScreen extends React.Component {
                     </TouchableOpacity>
                 </Modal>
                 {/* Modal 1 to 3 */}
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible2}
+                    onRequestClose={() => {
+                    this.setState({modalVisible2: false})
+                }}>
+                    <TouchableOpacity
+                        style={styles.container}
+                        activeOpacity={1}
+                        transparent={true}
+                        onPressOut={() => {
+                        this.setState({modalVisible2: false})
+                    }}>
+                        <View>
+                            <TouchableWithoutFeedback>
+                                <View style={styles.modalView}>
+                                    <Text style={styles.modalText}>點贏法</Text>
+                                    <View
+                                        style={{
+                                        marginTop: 5,
+                                        borderBottomColor: 'black',
+                                        borderBottomWidth: .9,
+                                        width: 150
+                                    }}></View>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({modalVisible3: true});
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal: true});
+                                    }}>
+                                        <Text style={styles.modalUserText}>出銃</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal2: true});
+                                        this.setState({modalVisible4: true});
+                                    }}>
+                                        <Text style={styles.modalUserText}>自摸</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        this.setState({modalVisible3: true});
+                                        this.setState({modalVisible2: false});
+                                        this.setState({handlemodal3: true});
+                                    }}>
+                                        <Text style={styles.modalUserText}>包自摸</Text>
+                                    </TouchableOpacity>
+
+                                </View>
+
+                            </TouchableWithoutFeedback>
+                        </View>
+                    </TouchableOpacity>
+                </Modal>
+
                 <View
                     style={{
                     position: "absolute",
@@ -613,7 +702,9 @@ export default class HomeScreen extends React.Component {
                 }}
                     activeOpacity={1}
                     onPress={() => {
-                    this.setState({modalVisible: true})
+                    this.setState({
+                        modalVisible: true
+                    }, this.setState({handlemodal: false,handlemodal2: false, handlemodal3: false}))
                 }}>
 
                     <View >
